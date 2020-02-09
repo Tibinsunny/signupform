@@ -1,5 +1,7 @@
 var express=require("express"); 
-var bodyParser=require("body-parser"); 
+var bodyParser=require("body-parser");
+var app=express() 
+app.set('view engine','ejs')
   
 const mongoose = require('mongoose'); 
 mongoose.connect('mongodb://localhost:27017/gfg', {useNewUrlParser: true, useUnifiedTopology: true});
@@ -9,7 +11,7 @@ db.once('open', function(callback){
     console.log("connection succeeded"); 
 }) 
   
-var app=express() 
+
   
   
 app.use(bodyParser.json()); 
@@ -54,6 +56,31 @@ app.get('/main',function(req,res){
     }); 
      
     })
+    app.post('/login',function(req,res){ 
+        var name = req.body.name; 
+        var email =req.body.password; 
+        db.collection('details').findOne({name:name, email:email}, function(err,result)
+        {
+            if(result==null)
+            {
+            console.log("User not found.")
+            }
+            else
+            {
+            console.log("Login Successful")
+            res.render('dashboard',{name:result.name}); 
+            }
+        })
+    
+         
+        })
+             
+           
+        app.get('/login',function(req,res){ 
+           
+            return res.redirect('login.html'); 
+             
+            })
 
 .listen(3000) 
   
